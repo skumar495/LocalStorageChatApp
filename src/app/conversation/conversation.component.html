@@ -20,12 +20,12 @@
                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
                 
                 <div class="chat_ib" *ngIf="msgs.length > 0; else template">
-                  <h5>Sandesh Kumar <span class="chat_date">{{msgs[msgs.length - 1].month}} {{msgs[msgs.length - 1].day}}</span></h5>
+                  <h5>Sandesh Kumar <span class="chat_date">{{msgs[msgs.length - 1].time | date: 'MMM dd'}}</span></h5>
                   <p>{{msgs[msgs.length - 1].text }} </p>
                 </div>
                 <ng-template #template>
                     <div class="chat_ib">
-                      <h5>Sandesh Kumar <span class="chat_date">Mar 14</span></h5>
+                      <h5>Sandesh Kumar <span class="chat_date">Mar 15</span></h5>
                       <p>Learning some new technologies</p>
                     </div>
                 </ng-template>

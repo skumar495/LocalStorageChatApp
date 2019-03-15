@@ -17,23 +17,24 @@ export class ConversationComponent implements OnInit {
     "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
   ];
 
-  constructor(private router: Router) { }
-
-  ngOnInit() {
-
+  constructor(private router: Router) {
+    
     // Return empty array if no chat is saved
     let savedChat = JSON.parse(localStorage.getItem('conversation') || '[]');
     
+    // Add sample messages if array is empty
+    if(savedChat.length == 0)
+      this.updateDummyMessages();
+
     // Append to existing variable
     this.msgs = [...this.msgs, ...savedChat];
+   }
 
-    // Add sample messages if array is empty
-    this.updateDummyMessages();
+   ngOnInit(){
 
-  }
+   }
 
   updateDummyMessages(): void {
-    if(this.msgs.length == 0){
       this.msgs = [{
         msg: 'Hi',
         time: new Date(),
@@ -59,7 +60,6 @@ export class ConversationComponent implements OnInit {
         time: new Date(),
         type: messageTypes.Incoming
       }];
-    }
   }
 
   sendMessage(): void {

@@ -28,6 +28,11 @@ export class ConversationComponent implements OnInit {
     this.msgs = [...this.msgs, ...savedChat];
 
     // Add sample messages if array is empty
+    this.updateDummyMessages();
+
+  }
+
+  updateDummyMessages(): void {
     if(this.msgs.length == 0){
       this.msgs = [{
         msg: 'Hi',
@@ -55,7 +60,6 @@ export class ConversationComponent implements OnInit {
         type: messageTypes.Incoming
       }];
     }
-
   }
 
   sendMessage(): void {

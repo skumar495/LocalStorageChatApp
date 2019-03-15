@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { messageTypes } from '../common/enums'
 
 @Component({
   selector: 'app-conversation',
@@ -10,7 +11,8 @@ import { Router } from '@angular/router';
 export class ConversationComponent implements OnInit {
 
   msgs:{}[] = [];
-  msg: string = '';
+  messageType = messageTypes;
+  newMessage: string = '';
   monthNames = [
     "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
   ];
@@ -18,59 +20,62 @@ export class ConversationComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
-    this.msgs = JSON.parse(localStorage.getItem('conversation') || '[]');
 
-    this.msgs.forEach(msg => {
-      msg = this.getMsgDate(msg);
-    });
-    console.log(this.msgs[0]);
+    // Return empty array if no chat is saved
+    let savedChat = JSON.parse(localStorage.getItem('conversation') || '[]');
+    
+    // Append to existing variable
+    this.msgs = [...this.msgs, ...savedChat];
+
+    // Add sample messages if array is empty
+    if(this.msgs.length == 0){
+      this.msgs = [{
+        msg: 'Hi',
+        time: new Date(),
+        type: messageTypes.Incoming
+      },
+      {
+        msg: 'Hi Dev',
+        time: new Date(),
+        type: messageTypes.Outgoing
+      },
+      {
+        msg: "What's up?",
+        time: new Date(),
+        type: messageTypes.Incoming
+      },
+      {
+        msg: "Fine. All good? What's new?",
+        time: new Date(),
+        type: messageTypes.Outgoing
+      },
+      {
+        msg: "Learning some new technologies",
+        time: new Date(),
+        type: messageTypes.Incoming
+      }];
+    }
+
   }
 
-  sendMessage(): void{
-    this.msg = this.msg.trim();
+  sendMessage(): void {
+    this.newMessage = this.newMessage.trim();
 
-    if(this.msg.length > 0){
-      var newMsg:any = {};
-      var today = new Date();
+    if(this.newMessage.length > 0){
+      let newMsg:any = {};
 
-      newMsg['text'] = this.msg;
-      newMsg['timestamp'] = today.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-      newMsg['year'] = today.getFullYear();
-      newMsg['month'] = this.monthNames[today.getMonth()];
-      newMsg['day'] = today.getDate();
+      newMsg['msg'] = this.newMessage;
+      newMsg['time'] = new Date();
+      newMsg['type'] = messageTypes.Outgoing;
       
       this.msgs.push(newMsg);
       localStorage.setItem('conversation', JSON.stringify(this.msgs));
-
-      newMsg = this.getMsgDate(newMsg);
-      
-      this.msg = '';
+      this.newMessage = '';
     }
-  }
-
-  getMsgDate(msg){
-    var today = new Date();
-    if( msg['year'] == today.getFullYear() && 
-      msg['month'] == this.monthNames[today.getMonth()] && 
-      msg['day'] == today.getDate()){
-        msg['month'] = 'Today';
-        msg['day'] = '';
-      }
-    
-      else if(msg['year'] == today.getFullYear() && 
-      msg['month'] == this.monthNames[today.getMonth()] && 
-      msg['day'] == today.getDate() - 1){
-        msg['month'] = 'Yesterday';
-        msg['day'] = '';
-      }
-
-    return msg;
   }
 
   onLogOut(): void{
-    if(confirm('Are you sure you want to log out?')){
       localStorage.clear();
       this.router.navigate(["login"]);
-    }
   }
 }

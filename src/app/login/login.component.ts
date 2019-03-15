@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Constants } from '../common/constants'
 
 @Component({
   selector: 'app-login',
@@ -16,13 +17,20 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
-    var isLoggedIn = localStorage.getItem('isLoggedIn') || '0';
+
+    // Check if user is logged in. Return 0 if undefined
+    let isLoggedIn = localStorage.getItem('isLoggedIn') || '0'; 
     if (isLoggedIn == '1')
-      this.router.navigate(["chat"]);
+      this.router.navigate(["chat"]); // User already logged in
+    else{
+        localStorage.clear(); // Clear storage anyway
+      }
   }
 
   onLogin(): void {
-    if (this.username == 'admin' && this.password == 'admin') {
+    if (this.username == Constants.USERNAME && this.password == Constants.PASSWORD) {
+
+      // We can save string values in local Storage
       localStorage.setItem('isLoggedIn', '1');
       this.router.navigate(["chat"]);
     } else {
